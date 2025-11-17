@@ -9,7 +9,7 @@ useSeoMeta({
 if (import.meta.server) {
   useHead({
     meta: [
-      { name: 'google-site-verification', content: 'ocIv8ZYQ5s35CIAYVpjPYyhBnWu7mo0JpdzOeWV4PZs' },
+      { name: 'google-site-verification', content: 'MCzMclnxDKiwD8zLAx7iQYVD_3roVPeEgsQ34TPPUMY' },
     ],
   })
 }
@@ -23,6 +23,6 @@ if (import.meta.server) {
         <NuxtPage />
       </main>
     </UContainer>
-    <AppFooter />
+    <!-- <AppFooter /> -->
   </UApp>
 </template>

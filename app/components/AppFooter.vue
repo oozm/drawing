@@ -30,13 +30,13 @@ const isDark = computed({
           </template>
         </ClientOnly>
         <UButton
-          to="https://git.new/draw"
+          to="https://github.com/oozm/drawing"
           color="neutral"
           variant="ghost"
           icon="i-simple-icons-github"
         />
         <UButton
-          to="https://x.com/atinux"
+          to="https://x.com/0x9521"
           color="neutral"
           variant="ghost"
           icon="i-simple-icons-x"

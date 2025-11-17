@@ -40,7 +40,7 @@ function drawingTitle(drawing: BlobObject) {
       >
         <div
           class="group relative max-w-[400px]"
-          :title="drawingTitle(drawing)"
+          :title="drawingTitle(drawing as any)"
         >
           <img
             :src="`/drawings/${drawing.pathname}`"

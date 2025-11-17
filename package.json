@@ -5,6 +5,7 @@
   "packageManager": "pnpm@10.7.1",
   "scripts": {
     "dev": "nuxt dev",
+    "deploy": "npx nuxthub deploy",
     "build": "nuxt build",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
