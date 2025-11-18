@@ -42,22 +42,6 @@ const isDark = computed({
           icon="i-simple-icons-x"
         />
       </div>
-      <div class="flex items-center justify-center lg:justify-start lg:flex-1 gap-x-1.5 mt-3 lg:mt-0 lg:order-1">
-        <span class="text-sm">Made with <ULink
-          to="https://nuxt.com/?utm_source=atidraw"
-          class="font-medium hover:underline underline-offset-3"
-        >
-          Nuxt
-        </ULink>, <ULink
-          to="https://ui.nuxt.com/?utm_source=atidraw"
-          class="font-medium hover:underline underline-offset-3"
-        >
-          Nuxt UI
-        </ULink> & <ULink
-          to="https://hub.nuxt.com/?utm_source=atidraw"
-          class="font-medium hover:underline underline-offset-3"
-        >NuxtHub</ULink>.</span>
-      </div>
     </UContainer>
   </footer>
 </template>

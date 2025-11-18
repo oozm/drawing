@@ -1,9 +1,9 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Draw and share your Art with Atidraw',
-  description: 'Atidraw is a web application that lets you to create, enhance, and share your drawings with the world. Harnessing the power of Cloudflare R2 and Cloudflare AI to store and enhance your drawings.',
-  ogTitle: 'Atidraw',
-  ogImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2RyYXcubnV4dC5kZXYiLCJpYXQiOjE3MTgwMTc3OTF9.ORrHGOCvTaxN7Lk24swRO7k-mrHmExypBquOA8FUlyg.jpg?theme=light',
+  title: 'Draw and share your Art with uilist',
+  description: 'uilist is a web application that lets you to create, enhance, and share your drawings with the world. Harnessing the power of Cloudflare R2 and Cloudflare AI to store and enhance your drawings.',
+  ogTitle: 'UI List',
+  ogImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3poYW9qcy5vb3ptLndvcmtlcnMuZGV2IiwiaWF0IjoxNzYzMzQ2OTUzfQ.P0i6OsBA0a-JWylFuVJF59dPCyOtzlyyRTCeHv_RGh0.jpg?theme=light',
   twitterCard: 'summary_large_image',
 })
 if (import.meta.server) {

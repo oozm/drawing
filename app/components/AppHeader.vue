@@ -1,38 +1,48 @@
 <script setup>
+import BaseButton from './BseButton.vue'
+
 const { loggedIn, clear } = useUserSession()
+const colorMode = useColorMode()
+
+// Computed
+const isDark = computed({
+  get() {
+    return colorMode.value === 'dark'
+  },
+  set() {
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  },
+})
 </script>
 
 <template>
-  <header class="border-b border-(--ui-border) -mb-px sticky top-0 z-50 border-none md:pt-8 md:max-w-2xl mx-auto bg-transparent backdrop-blur-none">
-    <UContainer class="flex items-center justify-between gap-3 h-16 md:rounded-full border-b md:border border-(--ui-border-muted) bg-(--ui-bg-muted)">
-      <NuxtLink
+  <header class=" -mb-px sticky top-0 z-50 border-none md:pt-8 md:max-w-2xl mx-auto bg-transparent ">
+    <UContainer class="flex items-center justify-between gap-3 h-16 md:rounded-full  border-(--ui-border-muted) bg-(--ui-bg-muted)  ">
+      <BaseButton
         to="/"
-        class="flex items-center gap-1 flex-shrink-0 font-bold text-xl"
-      >
-        <UIcon name="i-lucide-image" />
-        <h3>Instadraw</h3>
-      </NuxtLink>
-      <div class="flex items-center justify-end lg:flex-1 gap-1.5">
-        <UButton
-          to="https://github.com/oozm/drawing"
+        icon="i-lucide-image"
+      />
+
+      <BaseButton
+        to="/draw"
+        icon="i-ph-pencil"
+      />
+      <BaseButton
+        v-if="loggedIn"
+        color="neutral"
+        variant="ghost"
+        icon="i-ph-power"
+        @click="clear"
+      />
+      <ClientOnly v-if="!colorMode?.forced">
+        <BaseButton
+          :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
+          :aria-label="`Switch to ${isDark ? 'light' : 'dark'} mode`"
           color="neutral"
           variant="ghost"
-          icon="i-simple-icons-github"
+          @click="isDark = !isDark"
         />
-        <UButton
-          to="/draw"
-          icon="i-ph-pencil"
-        >
-          Draw
-        </UButton>
-        <UButton
-          v-if="loggedIn"
-          color="neutral"
-          variant="subtle"
-          icon="i-ph-power"
-          @click="clear"
-        />
-      </div>
+      </ClientOnly>
     </UContainer>
   </header>
 </template>

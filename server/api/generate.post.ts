@@ -14,7 +14,7 @@ export default eventHandler(async (event) => {
   // Ask LLaVA to describe the drawing
   const { description } = await hubAI()
     .run('@cf/llava-hf/llava-1.5-7b-hf', {
-      prompt: 'Describe this drawing in one sentence.',
+      prompt: 'Describe this drawing in one sentence in Chinese.',
       image: [...new Uint8Array(arrayBuffer)],
     })
     .catch(() => {

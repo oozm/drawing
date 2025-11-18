@@ -27,14 +27,14 @@ async function save(dataURL: string) {
       toast.add({
         title: 'Drawing shared!',
         description: 'Your drawing has been shared with the world.',
-        color: 'green',
+        color: 'success',
       })
       navigateTo('/')
     }).catch((err) => {
       toast.add({
         title: 'Could not share drawing',
         description: err.data?.message || err.message,
-        color: 'red',
+        color: 'error',
       })
     })
   saving.value = false
@@ -55,7 +55,10 @@ async function save(dataURL: string) {
           @save="save"
           @draw="onDraw"
         />
-        <!-- <AIDraw :drawing="drawing" class="mt-4" /> -->
+        <!-- <AIDraw
+          :drawing="drawing"
+          class="mt-4"
+        /> -->
       </div>
       <div
         v-else

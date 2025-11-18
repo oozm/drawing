@@ -6,10 +6,25 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     'nuxt-auth-utils',
   ],
+  $development: {
+    hub: {
+      projectUrl() {
+        return 'https://uilist.com'
+      },
+    },
+  },
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
+  ui: {
+    fonts: false,
+  },
   future: { compatibilityVersion: 4 },
   compatibilityDate: '2025-11-17',
+  nitro: {
+    experimental: {
+      openAPI: true,
+    },
+  },
   hub: {
     ai: true,
     blob: true,

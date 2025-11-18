@@ -1,12 +1,14 @@
 export default eventHandler(async (event) => {
   // Make sure the user is authenticated to upload
-  const { user } = await requireUserSession(event)
+  const session = await requireUserSession(event)
+  const { user } = session
 
   // Check last image author
   const { blobs } = await hubBlob().list({
     prefix: 'drawings/',
     limit: 1,
   })
+
   if (!import.meta.dev && blobs.length) {
     const [lastDrawing] = blobs
     if (lastDrawing.customMetadata?.userId === user.id) {

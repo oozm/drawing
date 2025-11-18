@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nuxt dev",
     "deploy": "npx nuxthub deploy",
+    "manage": "npx nuxthub manage",
     "build": "nuxt build",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
