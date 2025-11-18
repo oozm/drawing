@@ -28,6 +28,15 @@ function drawingTitle(drawing: BlobObject) {
   }
   return title
 }
+const activePath = ref<string | null>(null)
+
+function toggleActive(path: string) {
+  activePath.value = activePath.value === path ? null : path
+}
+
+function isActive(path: string) {
+  return activePath.value === path
+}
 </script>
 
 <template>
@@ -41,21 +50,22 @@ function drawingTitle(drawing: BlobObject) {
         <div
           class="group relative max-w-[400px]"
           :title="drawingTitle(drawing as any)"
+          @click="toggleActive(drawing.pathname)"
         >
           <img
             :src="`/drawings/${drawing.pathname}`"
             :alt="drawing.customMetadata?.description || drawing.pathname"
+            :class="isActive(drawing.pathname) ? 'opacity-0' : 'opacity-100'"
             class="w-full rounded aspect-1"
             loading="lazy"
           >
-          <!-- 手机点击显示 -->
-
           <img
             v-if="drawing.customMetadata?.aiImage"
             :src="`/drawings/${drawing.customMetadata?.aiImage}`"
             :alt="`AI image generated of ${drawing.customMetadata?.description || drawing.pathname}`"
             :title="drawing.customMetadata?.description || ''"
             class="w-full rounded aspect-1 absolute inset-0 opacity-0 active:opacity-100 group-hover:opacity-100 transition duration-200"
+            :class="isActive(drawing.pathname) ? 'opacity-100' : ''"
             loading="lazy"
           >
         </div>
