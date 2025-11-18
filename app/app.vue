@@ -23,6 +23,5 @@ if (import.meta.server) {
         <NuxtPage />
       </main>
     </UContainer>
-    <!-- <AppFooter /> -->
   </UApp>
 </template>
