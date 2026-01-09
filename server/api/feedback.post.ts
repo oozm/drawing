@@ -28,7 +28,7 @@ export default eventHandler(async (event) => {
 
   // 3. 组织要存的内容
   const feedbackId
-    = (globalThis.crypto as any)?.randomUUID?.()
+    = globalThis.crypto?.randomUUID?.()
       || Date.now().toString(36)
 
   const feedback = {

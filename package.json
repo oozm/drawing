@@ -24,6 +24,7 @@
     "@vueuse/core": "^13.3.0",
     "nuxt": "^3.17.5",
     "nuxt-auth-utils": "^0.5.20",
+    "nuxt-monaco-editor": "^1.4.0",
     "signature_pad": "^5.0.9"
   },
   "devDependencies": {

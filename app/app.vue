@@ -16,12 +16,10 @@ if (import.meta.server) {
 </script>
 
 <template>
-  <UApp>
+  <div class="w-full max-w-full! h-full flex flex-col">
     <AppHeader />
-    <UContainer>
-      <main class="min-h-[calc(100vh-192px)]">
-        <NuxtPage />
-      </main>
-    </UContainer>
-  </UApp>
+    <main class="flex-1">
+      <NuxtPage />
+    </main>
+  </div>
 </template>

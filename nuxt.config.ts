@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/eslint',
     'nuxt-auth-utils',
+    'nuxt-monaco-editor',
   ],
   $development: {
     hub: {
@@ -35,6 +36,14 @@ export default defineNuxtConfig({
       stylistic: {
         quotes: 'single',
       },
+    },
+  },
+  monacoEditor: {
+    // These are default values:
+    locale: 'zh-hans',
+    componentName: {
+      codeEditor: 'MonacoEditor',
+      diffEditor: 'MonacoDiffEditor',
     },
   },
 })

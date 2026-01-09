@@ -4,3 +4,20 @@
 @theme static {
   --font-sans: 'Public Sans', sans-serif;
 }
+/*
+   全局重置：确保 html 和 body 高度填满视口，并去除默认边距。
+*/
+html,
+body,
+#__nuxt {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* <-- 关键：让高度从视口继承 */
+}
+
+/* 确保根容器使用 Flex 布局 */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
