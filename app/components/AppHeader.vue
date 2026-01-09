@@ -93,6 +93,13 @@
           text="YY"
         />
 
+        <BaseButton
+          v-if="loggedIn"
+          color="neutral"
+          variant="ghost"
+          icon="i-ph-power"
+          @click="clear"
+        />
         <!-- 主题切换 -->
         <ClientOnly v-if="!colorMode?.forced">
           <UButton
@@ -268,6 +275,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const isMobileOpen = ref(false)
+const { loggedIn, clear } = useUserSession()
 
 const navItems = [
   { label: 'Elements', to: '/elements' },
