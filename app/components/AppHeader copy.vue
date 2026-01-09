@@ -27,7 +27,6 @@ const isDark = computed({
         to="/draw"
         icon="i-ph-pencil"
       />
-      loggedIn:{{ loggedIn }}
       <BaseButton
         v-if="loggedIn"
         color="neutral"

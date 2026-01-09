@@ -16,6 +16,10 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
+  colorMode: {
+    preference: 'dark', // 默认偏好
+    fallback: 'dark', // 备用方案
+  },
   ui: {
     fonts: false,
   },

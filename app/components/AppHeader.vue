@@ -50,68 +50,49 @@
 
       <!-- 右侧：桌面 -->
       <div class="hidden items-center gap-3 md:flex">
-        <!-- 积分气泡 -->
-        <UButton
-          variant="soft"
-          color="neutral"
-          size="xs"
-          class="rounded-full border bg-slate-100 text-xs border-slate-200 dark:bg-slate-900 dark:border-slate-700"
-        >
-          <span
-            class="inline-flex h-5 w-5 items-center justify-center rounded-full border text-[10px] border-slate-300 dark:border-slate-700"
-          >
-            ⚡
-          </span>
-          <span class="ml-1">0</span>
-        </UButton>
-
         <!-- Create -->
         <UButton
-          size="sm"
-          to="/create"
+          size="lg"
           class="rounded-full bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white shadow-md shadow-fuchsia-500/30 hover:brightness-110 border-0"
+          @click="handleCreate"
         >
           Create
         </UButton>
 
-        <!-- 通知 -->
-        <UButton
-          icon="i-heroicons-bell-20-solid"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          class="h-8 w-8 rounded-full border bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
-          aria-label="Notifications"
-        />
-
-        <!-- 用户头像 -->
-        <UAvatar
-          size="sm"
-          class="bg-slate-200 text-xs dark:bg-slate-800"
-          src=""
-          alt="User"
-          text="YY"
-        />
-
-        <BaseButton
-          v-if="loggedIn"
-          color="neutral"
-          variant="ghost"
-          icon="i-ph-power"
-          @click="clear"
-        />
         <!-- 主题切换 -->
-        <ClientOnly v-if="!colorMode?.forced">
+        <!-- <ClientOnly v-if="!colorMode?.forced">
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
             :aria-label="`Switch to ${isDark ? 'light' : 'dark'} mode`"
             color="neutral"
             variant="ghost"
-            class=" rounded-full"
+            class="rounded-full"
             @click="toggleColorMode"
           />
-        </ClientOnly>
-        <LoginModal />
+        </ClientOnly> -->
+        <template v-if="loggedIn">
+          <UDropdownMenu
+            :items="userMenuItems"
+          >
+            <div>
+              <UButton
+                icon="i-ph-caret-down"
+                color="neutral"
+                variant="ghost"
+                class="profile-name text-sm font-bold!"
+              >
+                {{ user?.name }}
+                <UAvatar
+                  v-if="user?.avatar"
+                  size="sm"
+                  class="cursor-pointer ring-2 ring-transparent hover:ring-primary-500 transition-all"
+                  :src="user?.avatar"
+                />
+              </UButton>
+            </div>
+          </UDropdownMenu>
+        </template>
+        <LoginModal v-model="isLoginOpen" />
       </div>
 
       <!-- 移动端菜单按钮 -->
@@ -119,7 +100,7 @@
         class="flex h-9 w-9 items-center justify-center rounded-md border bg-slate-100 text-slate-900 border-slate-300 hover:border-slate-400 md:hidden dark:bg-black/60 dark:text-slate-100 dark:border-slate-500/60 dark:hover:border-slate-300"
         variant="ghost"
         color="neutral"
-        size="xs"
+        size="lg"
         aria-label="Open menu"
         @click="isMobileOpen = true"
       >
@@ -157,7 +138,7 @@
             icon="i-heroicons-x-mark-20-solid"
             color="neutral"
             variant="ghost"
-            size="xs"
+            size="lg"
             class="h-8 w-8 rounded-full border bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-800"
             aria-label="Close menu"
             @click="closeMobile"
@@ -217,7 +198,7 @@
                   icon="i-heroicons-bell-20-solid"
                   color="neutral"
                   variant="ghost"
-                  size="xs"
+                  size="lg"
                   class="h-8 w-8 rounded-full border bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"
                 />
               </div>
@@ -273,9 +254,12 @@
 </template>
 
 <script setup lang="ts">
+import type { DropdownMenuItem } from '@nuxt/ui'
+
 const route = useRoute()
 const isMobileOpen = ref(false)
-const { loggedIn, clear } = useUserSession()
+const isLoginOpen = ref(false)
+const { loggedIn, clear, user } = useUserSession()
 
 const navItems = [
   { label: 'Elements', to: '/elements' },
@@ -283,14 +267,44 @@ const navItems = [
   { label: 'Spotlight', to: '/spotlight' },
   { label: 'Blog', to: '/blog' },
 ]
-
-const colorMode = useColorMode()
-
-const isDark = computed(() => colorMode.value === 'dark')
-
-const toggleColorMode = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
+// 下拉菜单配置
+const userMenuItems = ref<DropdownMenuItem[][]>([
+  [{
+    label: user.value?.name || '--',
+    avatar: {
+      src: user.value?.avatar,
+    },
+    type: 'label',
+  }],
+  [{
+    label: 'Favorites',
+    icon: 'i-heroicons-heart',
+    onSelect: () => navigateTo('/favorites'),
+  }],
+  [{
+    label: 'Settings',
+    icon: 'i-heroicons-cog-8-tooth',
+    onSelect: () => navigateTo('/settings'),
+  }, {
+    label: 'Sign out',
+    icon: 'i-heroicons-arrow-left-on-rectangle',
+    onSelect: () => clear(),
+  }],
+])
+const handleCreate = () => {
+  if (!loggedIn.value) {
+    isLoginOpen.value = true
+    return
+  }
+  navigateTo('/create')
 }
+// const colorMode = useColorMode()
+
+// const isDark = computed(() => colorMode.value === 'dark')
+
+// const toggleColorMode = () => {
+//   colorMode.preference = isDark.value ? 'light' : 'dark'
+// }
 
 const isActive = (item: { to: string }) => {
   return route.path === item.to || route.path.startsWith(item.to + '/')

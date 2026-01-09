@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import ComponentCard from '@/components/ComponentCard.vue'
 import '~/utils/ComponentPreview.js'
 
-// --- 类型定义 ---
+// --- 类型定义保持不变 ---
 interface IComponentData {
   id: string | number
   title: string
@@ -21,106 +21,95 @@ interface ICategory {
   type: string | null
 }
 
-// --- 侧边栏分类数据 (复刻 uiverse.io) ---
+// --- 侧边栏分类数据 ---
 const CATEGORIES: ICategory[] = [
   { label: 'All', icon: 'i-heroicons-book-open', to: '/elements', type: null },
-  { label: 'Buttons', icon: 'i-heroicons-play-circle', to: '/buttons', type: 'Button' },
-  { label: 'Checkboxes', icon: 'i-heroicons-check-circle', to: '/checkboxes', type: 'Checkboxes' },
-  { label: 'Toggle switches', icon: 'i-heroicons-arrows-right-left', to: '/toggle', type: 'Toggle' },
-  { label: 'Cards', icon: 'i-heroicons-square-2-stack', to: '/card', type: 'Card' },
-  { label: 'Loaders', icon: 'i-heroicons-arrow-path', to: '/loader', type: 'Loader' },
-  { label: 'Inputs', icon: 'i-heroicons-pencil-square', to: '/input', type: 'Input' },
-  { label: 'Radio buttons', icon: 'i-heroicons-list-bullet', to: '/radio', type: 'Radio' },
-  { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', type: 'Form' },
+  { label: 'Buttons', icon: 'i-heroicons-play-circle', to: '/buttons', type: 'buttons' },
+  { label: 'Checkboxes', icon: 'i-heroicons-check-circle', to: '/checkboxes', type: 'checkboxes' },
+  { label: 'Toggle switches', icon: 'i-heroicons-arrows-right-left', to: '/toggle', type: 'toggle' },
+  { label: 'Cards', icon: 'i-heroicons-square-2-stack', to: '/card', type: 'card' },
+  { label: 'Loaders', icon: 'i-heroicons-arrow-path', to: '/loader', type: 'loader' },
+  { label: 'Inputs', icon: 'i-heroicons-pencil-square', to: '/input', type: 'input' },
+  { label: 'Radio buttons', icon: 'i-heroicons-list-bullet', to: '/radio', type: 'radio' },
+  { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', type: 'form' },
 ]
 
-// --- 主题控制 ---
+// --- 主题控制保持不变 ---
 const colorMode = useColorMode()
 const isDark = computed({
-  get() {
-    return colorMode.preference === 'dark'
-  },
-  set(val: boolean) {
-    colorMode.preference = val ? 'dark' : 'light'
-  },
+  get: () => colorMode.preference === 'dark',
+  set: (val: boolean) => colorMode.preference = val ? 'dark' : 'light',
 })
 
 // --- 响应式状态 ---
 const components = ref<IComponentData[]>([])
 const loading = ref(false)
-const error = ref<string | null>(null)
 const nextCursor = ref<string | null>(null)
 const hasMore = ref(true)
-const currentType = ref<string | null>(null)
-
-// UI 状态
 const searchTerm = ref('')
-const limit = 50
 const route = useRoute()
 
-// --- 数据获取逻辑 ---
-const fetchWithRetry = async (url: string, options: RequestInit = {}, retries = 3): Promise<Response> => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(url, options)
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-      return response
-    }
-    catch (e) {
-      if (i === retries - 1) throw e
-      const delay = Math.pow(2, i) * 1000
-      await new Promise(resolve => setTimeout(resolve, delay))
-    }
+// 1. 提取路径参数
+const categoryParam = computed(() => (route.params.category as string) || 'elements')
+
+// 这里的请求地址现在变成了当前页面路径本身
+const { data, pending } = await useAsyncData(
+  `data-${route.params.category}`,
+  () => $fetch(route.path, { // 以前是 /api/components/... 现在直接用 route.path
+    params: {
+      _data: 'routes/$category',
+      page: 1,
+    },
+  }),
+  { watch: [() => route.params.category] },
+)
+
+// 3. 核心修复：监听 data 变化，将其同步到你的 components 数组中
+watch(data, (newData) => {
+  if (newData) {
+    components.value = newData.components || []
+    nextCursor.value = newData.nextCursor || null
+    hasMore.value = newData.hasMore ?? false
   }
-  throw new Error('Exceeded max retries.')
-}
+}, { immediate: true })
 
-const fetchComponents = async (reset = false, cursor: string | null = null) => {
+// 4. 修复加载更多逻辑
+const loadMore = async () => {
+  if (loading.value || !hasMore.value) return
+
   loading.value = true
-  error.value = null
-
-  const queryParams = new URLSearchParams()
-  if (cursor) queryParams.append('cursor', cursor)
-  if (currentType.value) queryParams.append('type', currentType.value)
-  queryParams.append('limit', limit.toString())
-
-  const url = `/api/components/list?${queryParams.toString()}`
-
   try {
-    const response = await fetchWithRetry(url)
-    const data = await response.json()
-    const newComponents: IComponentData[] = Array.isArray(data.components) ? data.components : []
+    const res = await $fetch(`/api/components/${categoryParam.value}`, {
+      params: {
+        _data: 'routes/$category',
+        cursor: nextCursor.value,
+        page: (Number(route.query.page) || 1) + 1,
+      },
+    })
 
-    components.value = reset ? newComponents : [...components.value, ...newComponents]
-    nextCursor.value = data.nextCursor || null
-    hasMore.value = data.hasMore ?? false
+    if (res?.components) {
+      components.value.push(...res.components)
+      nextCursor.value = res.nextCursor || null
+      hasMore.value = res.hasMore ?? false
+    }
   }
   catch (err) {
-    console.error('Failed to fetch components:', err)
-    error.value = '组件加载失败，请稍后重试。'
+    console.error('Failed to load more:', err)
   }
   finally {
     loading.value = false
   }
 }
 
-// --- 生命周期与监听 ---
-onMounted(() => {
-  const typeFromQuery = route.query.type as string | undefined
-  currentType.value = typeFromQuery || null
-  fetchComponents(true, null)
-})
-
-watch(() => route.query.type, (newType) => {
-  currentType.value = (newType as string) || null
-  fetchComponents(true, null)
-})
-
+// 5. 绑定到你的原有函数名
 const handleLoadMore = () => {
-  if (nextCursor.value && !loading.value) {
-    fetchComponents(false, nextCursor.value)
-  }
+  loadMore()
 }
+
+// 侧边栏高亮逻辑修复：与 categoryParam 匹配
+const currentType = computed(() => categoryParam.value)
+
+// 移除原有的 onMounted 重复请求，避免冲突
 </script>
 
 <template>
@@ -188,14 +177,6 @@ const handleLoadMore = () => {
             />
           </div>
         </div>
-
-        <UAlert
-          v-if="error"
-          color="error"
-          variant="soft"
-          :title="error"
-          class="mb-6"
-        />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           <template v-if="components.length > 0">

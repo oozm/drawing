@@ -12,7 +12,7 @@
   >
     <!-- 方便测试的按钮 -->
     <UButton
-      v-if="loggedIn"
+      v-if="!loggedIn"
       label="Join the Community"
       color="neutral"
       variant="ghost"
@@ -136,23 +136,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
 const { loggedIn } = useUserSession()
 console.log('loggedIn', loggedIn.value)
 
 const authProviders = useState<{ google: boolean, github: boolean }>('authProviders')
 
 // 使用 ref 来控制模态框的显示状态
-const isOpen = ref(false) // 默认设置为 true 方便在组件加载时看到效果
+// const isOpen = ref(false) // 默认设置为 true 方便在组件加载时看到效果
 
-// 如果要在父组件中控制此模态框，可以定义 props 和 emits，例如：
-// const props = defineProps<{ modelValue: boolean }>()
-// const emit = defineEmits(['update:modelValue'])
-// const isOpen = computed({
-//   get: () => props.modelValue,
-//   set: (value) => emit('update:modelValue', value)
-// })
+// // 如果要在父组件中控制此模态框，可以定义 props 和 emits，例如：
+const props = defineProps<{ modelValue: boolean }>()
+const emit = defineEmits(['update:modelValue'])
+const isOpen = computed({
+  get: () => props.modelValue,
+  set: value => emit('update:modelValue', value),
+})
 </script>
 
 <style scoped>
