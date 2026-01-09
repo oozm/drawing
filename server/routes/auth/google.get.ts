@@ -10,6 +10,6 @@ export default defineOAuthGoogleEventHandler({
       },
     })
 
-    return sendRedirect(event, '/draw')
+    return sendRedirect(event, '/elements')
   },
 })

@@ -10,6 +10,6 @@ export default defineOAuthGitHubEventHandler({
       },
     })
 
-    return sendRedirect(event, '/draw')
+    return sendRedirect(event, '/elements')
   },
 })
