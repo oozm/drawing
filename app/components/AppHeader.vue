@@ -60,7 +60,7 @@
         </UButton>
 
         <!-- 主题切换 -->
-        <!-- <ClientOnly v-if="!colorMode?.forced">
+        <ClientOnly v-if="!colorMode?.forced">
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
             :aria-label="`Switch to ${isDark ? 'light' : 'dark'} mode`"
@@ -69,7 +69,7 @@
             class="rounded-full"
             @click="toggleColorMode"
           />
-        </ClientOnly> -->
+        </ClientOnly>
         <template v-if="loggedIn">
           <UDropdownMenu
             :items="userMenuItems"
@@ -298,13 +298,13 @@ const handleCreate = () => {
   }
   navigateTo('/create')
 }
-// const colorMode = useColorMode()
+const colorMode = useColorMode()
 
-// const isDark = computed(() => colorMode.value === 'dark')
+const isDark = computed(() => colorMode.value === 'dark')
 
-// const toggleColorMode = () => {
-//   colorMode.preference = isDark.value ? 'light' : 'dark'
-// }
+const toggleColorMode = () => {
+  colorMode.preference = isDark.value ? 'light' : 'dark'
+}
 
 const isActive = (item: { to: string }) => {
   return route.path === item.to || route.path.startsWith(item.to + '/')
