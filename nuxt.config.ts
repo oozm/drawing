@@ -31,6 +31,11 @@ export default defineNuxtConfig({
       openAPI: true,
     },
   },
+  hooks: {
+    'nitro:config': (nitroConfig) => {
+      nitroConfig.preset = 'cloudflare-module'
+    },
+  },
   hub: {
     ai: true,
     blob: true,
