@@ -52,8 +52,8 @@ export default eventHandler(async (event) => {
     // 如果没有抛出异常，说明文件已存在
     if (existing) {
       throw createError({
-        statusCode: 409, // 使用 409 Conflict 更符合“资源已存在”的语义
-        statusMessage: 'Component already exists. Duplicate submissions are not allowed.',
+        statusCode: 409,
+        message: 'Component already exists. Duplicate submissions are not allowed.',
       })
     }
   }

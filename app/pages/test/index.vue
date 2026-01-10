@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { $api } = useNuxtApp()
 interface Feedback {
   id: string
   message: string
@@ -20,7 +21,7 @@ async function submitFeedback() {
 
   loading.value = true
   try {
-    await $fetch('/api/feedback', {
+    await $api('/api/feedback', {
       method: 'POST',
       body: {
         message: message.value,
@@ -34,30 +35,20 @@ async function submitFeedback() {
     })
     message.value = ''
   }
-  catch (err: any) {
-    toast.add({
-      title: '提交失败',
-      description: err?.data?.statusMessage || err?.message,
-      color: 'error',
-    })
+  catch {
+    // Global error handler
   }
   loading.value = false
 }
 
 async function getFeedbacks() {
   loading.value = true
-  const { data, error } = await useFetch<{ feedbacks: Feedback[], cursor: string, hasMore: boolean }>('/api/feedback')
-  if (error.value) {
-    console.log('err', error.value)
-    toast.add({
-      title: '查看反馈失败',
-      description: error.value.statusMessage || error.value.message,
-      color: 'error',
-    })
-  }
-  else {
-    feedbacks.value = data.value?.feedbacks || [] as Feedback[]
+  try {
+    const data = await $api<{ feedbacks: Feedback[], cursor: string, hasMore: boolean }>('/api/feedback')
+    feedbacks.value = data.feedbacks || [] as Feedback[]
     console.log('feedbacks', feedbacks.value)
+  } catch {
+     // Global error handler
   }
   loading.value = false
 }

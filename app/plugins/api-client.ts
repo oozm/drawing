@@ -12,7 +12,8 @@ export default defineNuxtPlugin(() => {
 
     // 响应错误拦截 (4xx, 5xx)
     onResponseError({ response }) {
-      const message = response._data?.statusMessage || response._data?.message || '系统繁忙，请稍后再试'
+      console.log('Global API Error Interceptor:', response)
+      const message = response._data?.message || response._data?.statusMessage || '系统繁忙，请稍后再试'
 
       // 弹出错误提醒
       toast.add({

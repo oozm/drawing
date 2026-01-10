@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
   colorMode: {
-    preference: 'dark', // 默认偏好
+    preference: 'dark', // 默认偏好颜色模式
     fallback: 'dark', // 备用方案
   },
   ui: {
@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   hub: {
     ai: true,
     blob: true,
+    database: true,
   },
   // Development modules
   eslint: {

@@ -20,6 +20,7 @@ export default eventHandler(async (event) => {
   const pageSize = 30
   const currentPage = parseInt(query.page as string || '1')
   const cursor = query.cursor as string
+  const searchQ = (query.q as string || '').toLowerCase()
 
   // 4. 路由逻辑转换
   // 如果是 'elements'，则不进行类型过滤（显示全站/全个人组件）
@@ -66,11 +67,18 @@ export default eventHandler(async (event) => {
     })
 
     // 6. 执行分类过滤
-    const filtered = isAll
+    let filtered = isAll
       ? allComponents
       : allComponents.filter(c =>
           c.type && c.type.toLowerCase() === targetType?.toLowerCase(),
         )
+
+    if (searchQ) {
+      filtered = filtered.filter(c =>
+        c.title.toLowerCase().includes(searchQ)
+        || c.type.toLowerCase().includes(searchQ),
+      )
+    }
 
     // 7. 切片返回分页所需的 30 条数据
     const paginatedItems = filtered.slice(0, pageSize)

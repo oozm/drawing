@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { $api } = useNuxtApp()
 const { loggedIn } = useUserSession()
 const authProviders = useState<{ google: boolean, github: boolean }>('authProviders')
 const toast = useToast()
@@ -19,7 +20,7 @@ async function save(dataURL: string) {
   form.append('drawing', new File([blob], `drawing.jpg`, { type: 'image/jpeg' }))
 
   // Upload the file to the server
-  await $fetch('/api/upload', {
+  await $api('/api/upload', {
     method: 'POST',
     body: form,
   })
@@ -30,12 +31,9 @@ async function save(dataURL: string) {
         color: 'success',
       })
       navigateTo('/')
-    }).catch((err) => {
-      toast.add({
-        title: 'Could not share drawing',
-        description: err.data?.message || err.message,
-        color: 'error',
-      })
+    })
+    .catch(() => {
+      // Global error handler will show the toast
     })
   saving.value = false
 }

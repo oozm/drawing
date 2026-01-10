@@ -3,6 +3,8 @@ import { ref, watch, computed } from 'vue'
 import ComponentCard from '@/components/ComponentCard.vue'
 import '~/utils/ComponentPreview.js'
 
+const { $api } = useNuxtApp()
+
 // --- 类型定义保持不变 ---
 interface IComponentData {
   id: string | number
@@ -46,26 +48,27 @@ const components = ref<IComponentData[]>([])
 const loading = ref(false)
 const nextCursor = ref<string | null>(null)
 const hasMore = ref(true)
-const searchTerm = ref('')
 const route = useRoute()
+const searchTerm = ref((route.query.q as string) || '')
 
 // 1. 提取路径参数
 const categoryParam = computed(() => (route.params.category as string) || 'elements')
 
 // 这里的请求地址现在变成了当前页面路径本身
-const { data, pending } = await useAsyncData(
-  `data-${route.params.category}`,
-  () => $fetch(route.path, { // 以前是 /api/components/... 现在直接用 route.path
+const { data } = await useAsyncData(
+  `data-${route.params.category}-${route.query.q}`,
+  () => $api(route.path, { // 以前是 /api/components/... 现在直接用 route.path
     params: {
       _data: 'routes/$category',
       page: 1,
+      q: route.query.q,
     },
   }),
-  { watch: [() => route.params.category] },
+  { watch: [() => route.params.category, () => route.query.q] },
 )
 
 // 3. 核心修复：监听 data 变化，将其同步到你的 components 数组中
-watch(data, (newData) => {
+watch(data, (newData: any) => {
   if (newData) {
     components.value = newData.components || []
     nextCursor.value = newData.nextCursor || null
@@ -79,11 +82,12 @@ const loadMore = async () => {
 
   loading.value = true
   try {
-    const res = await $fetch(`/api/components/${categoryParam.value}`, {
+    const res: any = await $api(`/api/components/${categoryParam.value}`, {
       params: {
         _data: 'routes/$category',
         cursor: nextCursor.value,
         page: (Number(route.query.page) || 1) + 1,
+        q: route.query.q,
       },
     })
 
@@ -93,12 +97,23 @@ const loadMore = async () => {
       hasMore.value = res.hasMore ?? false
     }
   }
-  catch (err) {
-    console.error('Failed to load more:', err)
+  catch {
+    // Global error handler
   }
   finally {
     loading.value = false
   }
+}
+
+const handleSearch = () => {
+  navigateTo({
+    path: route.path,
+    query: {
+      ...route.query,
+      q: searchTerm.value || undefined,
+      page: 1,
+    },
+  })
 }
 
 // 5. 绑定到你的原有函数名
@@ -117,10 +132,6 @@ const currentType = computed(() => categoryParam.value)
     <main class="flex flex-1">
       <aside class="w-60 hidden md:block bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 p-4 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
         <nav class="flex flex-col gap-y-1">
-          <h2 class="px-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">
-            Browse Elements
-          </h2>
-
           <NuxtLink
             v-for="item in CATEGORIES"
             :key="item.label"
@@ -168,6 +179,7 @@ const currentType = computed(() => categoryParam.value)
               icon="i-heroicons-magnifying-glass"
               class="hidden sm:block min-w-[240px]"
               :ui="{ base: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl' }"
+              @keydown.enter="handleSearch"
             />
             <UButton
               :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"

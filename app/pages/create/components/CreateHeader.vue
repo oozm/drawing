@@ -33,6 +33,8 @@
 </template>
 
 <script setup lang="ts">
+const { $api } = useNuxtApp()
+const toast = useToast()
 // 定义 Props
 const props = defineProps<{
   currentTypeLabel: string
@@ -42,21 +44,32 @@ const props = defineProps<{
   }
   techStack: string
   type: string
+  bgColor: string
 }>()
+
 const handleSubmit = async () => {
   console.log('props', props)
 
-  const { data } = await useFetch(`/api/components/submit`, {
-    method: 'POST',
-    body: {
-      title: props.currentTypeLabel,
-      html: props.code.html,
-      css: props.code.css,
-      techStack: props.techStack,
-      type: props.type,
-    },
-  })
-  console.log('data', data.value)
+  try {
+    await $api(`/api/components/submit`, {
+      method: 'POST',
+      body: {
+        title: props.currentTypeLabel,
+        html: props.code.html,
+        bgColor: props.bgColor,
+        css: props.code.css,
+        techStack: props.techStack,
+        type: props.type,
+      },
+    })
+    toast.add({
+      color: 'success',
+      title: 'Component submitted successfully',
+    })
+  }
+  catch (e) {
+    console.log('Failed to submit', e)
+  }
 }
 // 定义 Emits
 const emit = defineEmits<{

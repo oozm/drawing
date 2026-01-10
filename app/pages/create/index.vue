@@ -4,7 +4,9 @@
     <!-- 2. 顶部 Header: 浅色背景和深色文字/边框 -->
     <CreateHeader
       v-model:current-type-label="currentTypeLabel"
+      v-model:selected-tech="selectedTech"
       :code="code"
+      :bg-color="bgColor"
       :tech-stack="selectedTech"
       :type="currentType"
       @select="handleInit"
@@ -14,9 +16,9 @@
     <div class="flex-1 flex overflow-hidden mt-4">
       <!-- 左侧预览区组件 (PreviewPanel) -->
       <PreviewPanel
-        :bg-colors="bgColors"
         :code="code"
         :selected-tech="selectedTech"
+        @update:bg-color="bgColor = $event"
       />
       <EditorPanel
         v-model:active-tab="activeTab"
@@ -37,7 +39,7 @@ import { loadTemplate } from '~/utils/index'
 
 // --- State ---
 const activeTab = ref('CSS')
-const bgColors = ['#e8e8e8', '#ffffff', '#1f2937', '#000000']
+const bgColor = ref('')
 
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')

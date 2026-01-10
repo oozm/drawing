@@ -5,13 +5,15 @@
       <div class="flex items-center gap-2">
         <span class="text-xs text-gray-500 font-mono">{{ bgColor }}</span>
         <div class="flex px-2 items-center gap-2 bg-gray-200 dark:bg-gray-800 rounded p-0.5">
-          <button
-            v-for="color in bgColors"
-            :key="color"
-            class="w-5 h-5 rounded hover:scale-110 transition-transform border border-gray-600 ml-1 first:ml-0"
-            :style="{ backgroundColor: color }"
-            @click="bgColor = color"
-          />
+          <ColorPicker v-model="bgColor">
+            <template #trigger="{ color }">
+              <button
+                type="button"
+                class="w-5 h-5 rounded hover:scale-110 transition-transform border border-gray-600"
+                :style="{ '--bg-color': color }"
+              />
+            </template>
+          </ColorPicker>
           <!-- 主题切换 -->
           <UButton
             :icon="colorMode === 'light' ? 'i-lucide-moon' : 'i-lucide-sun'"
@@ -39,7 +41,6 @@
 interface CodeBlock { html: string, css: string }
 
 const props = defineProps<{
-  bgColors: string[]
   code: CodeBlock
   selectedTech: string
 }>()
@@ -120,10 +121,14 @@ const renderPreview = () => {
   doc.write(iframeContent)
   doc.close()
 }
-
+const emit = defineEmits(['update:bgColor'])
 // Render on first mount
 onMounted(() => {
   renderPreview()
+})
+watchEffect(() => {
+  console.log('bgColor', bgColor.value)
+  emit('update:bgColor', bgColor.value)
 })
 
 // Watch for changes in key dependencies, re-render automatically

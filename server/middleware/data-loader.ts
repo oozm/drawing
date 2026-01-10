@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
   // 1. 检查是否带有 Uiverse 风格的 _data 标识
-  if (query._data === 'routes/$category') {
+  if (query._data === 'routes/$category' && !event.path.startsWith('/api/')) {
     const category = event.path.split('?')[0].replace('/', '') // 拿到 'buttons' 或 'elements'
 
     // 2. 内部重定向或直接调用逻辑
@@ -19,6 +19,7 @@ export default defineEventHandler(async (event) => {
       return single.charAt(0).toUpperCase() + single.slice(1)
     }
     const targetType = isAll ? null : formatType(category)
+    const searchQ = (query.q as string || '').toLowerCase()
 
     try {
       const prefix = user ? `components/${user.id}/` : 'components/'
@@ -35,9 +36,16 @@ export default defineEventHandler(async (event) => {
         }
       })
 
-      const filtered = isAll
+      let filtered = isAll
         ? allComponents
         : allComponents.filter(c => c.type.toLowerCase() === targetType?.toLowerCase())
+
+      if (searchQ) {
+        filtered = filtered.filter(c =>
+          c.title.toLowerCase().includes(searchQ)
+          || c.type.toLowerCase().includes(searchQ),
+        )
+      }
 
       // 3. 关键：直接返回 JSON 并停止后续渲染
       return {

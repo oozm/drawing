@@ -9,13 +9,14 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: '缺少组件 ID' })
   }
 
-  // 2. 动态前缀：如果是登录用户查自己的，优先查自己；否则查公共目录
-  const prefix = user ? `components/${user.id}/` : 'components/'
+  // 2. 动态前缀：总是从公共目录查找，以支持公开访问
+  const prefix = 'components/'
 
   try {
     // 3. 核心修复：因为文件名包含 Type (如 Button_id.json)，
     // 我们不能直接拼接，需要 list 之后 find 匹配 id 的那一个
-    const list = await hubBlob().list({ prefix })
+    // 注意：如果有大量文件，这里需要优化（如引入数据库索引或 KV 映射）
+    const list = await hubBlob().list({ prefix, limit: 1000 })
     const targetFile = list.blobs.find(blob => blob.pathname.includes(id))
 
     if (!targetFile) {

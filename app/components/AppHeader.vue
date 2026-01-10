@@ -254,8 +254,6 @@
 </template>
 
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
-
 const route = useRoute()
 const isMobileOpen = ref(false)
 const isLoginOpen = ref(false)
@@ -268,7 +266,7 @@ const navItems = [
   { label: 'Blog', to: '/blog' },
 ]
 // 下拉菜单配置
-const userMenuItems = ref<DropdownMenuItem[][]>([
+const userMenuItems = ref<any>([
   [{
     label: user.value?.name || '--',
     avatar: {
@@ -279,7 +277,7 @@ const userMenuItems = ref<DropdownMenuItem[][]>([
   [{
     label: 'Favorites',
     icon: 'i-heroicons-heart',
-    onSelect: () => navigateTo('/favorites'),
+    onSelect: () => navigateTo('/my-favorites'),
   }],
   [{
     label: 'Settings',

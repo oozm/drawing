@@ -86,7 +86,7 @@ onMounted(async () => {
   console.log('monaco', monaco.value)
 
   // 注册一次即可
-  monaco.value!.languages!.registerCompletionItemProvider('html', {
+  ;(monaco.value as any).languages.registerCompletionItemProvider('html', {
     triggerCharacters: ['"', ' ', '-', ':'],
     provideCompletionItems(model: any, position: any) {
       const textUntilPosition = model.getValueInRange({
