@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "elements",
+  "compatibility_date": "2024-11-01",
+  "pages_build_output_dir": ".output/public",
+  "observability": {
+    "enabled": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "atidraw-db",
+      "database_id": "b66c33ba-0759-4966-8294-bfadeaff362c"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOB",
+      "bucket_name": "zhaojs"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  }
+}
