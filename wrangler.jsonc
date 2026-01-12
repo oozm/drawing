@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zhaojs",
-  "compatibility_date": "2024-11-01",
+  "compatibility_date": "2025-01-12",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./dist/server/index.mjs",
   "assets": {
@@ -15,7 +15,7 @@
     {
       "binding": "DB",
       "database_name": "elements",
-      "database_id": "b66c33ba-0759-4966-8294-bfadeaff362c",
+      "database_id": "b495f3d8-4e4c-4439-b70f-198e675d498e",
       "migrations_dir": "./server/database/migrations"
     }
   ],
