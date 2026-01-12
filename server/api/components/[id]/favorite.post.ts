@@ -10,56 +10,68 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Missing component ID' })
   }
 
-  const db = useDrizzle()
+  try {
+    const db = useDrizzle()
 
-  // Check if already favorited
-  const existing = await db.select().from(favorites).where(
-    and(
-      eq(favorites.userId, user.id),
-      eq(favorites.componentId, componentId),
-    ),
-  ).get()
-
-  if (existing) {
-    // Unfavorite
-    await db.delete(favorites).where(
+    // Check if already favorited
+    const existing = await db.select().from(favorites).where(
       and(
         eq(favorites.userId, user.id),
         eq(favorites.componentId, componentId),
       ),
-    )
+    ).get()
 
-    // Decrement stats
-    // Note: In SQLite with Drizzle, upsert/update with sql works well
-    try {
-      await db.update(componentStats)
-        .set({ favorites: sql`${componentStats.favorites} - 1` })
-        .where(eq(componentStats.componentId, componentId))
+    if (existing) {
+      // Unfavorite
+      await db.delete(favorites).where(
+        and(
+          eq(favorites.userId, user.id),
+          eq(favorites.componentId, componentId),
+        ),
+      )
+
+      // Decrement stats
+      // Note: In SQLite with Drizzle, upsert/update with sql works well
+      try {
+        await db.update(componentStats)
+          .set({ favorites: sql`${componentStats.favorites} - 1` })
+          .where(eq(componentStats.componentId, componentId))
+          .run()
+      }
+      catch {
+        // Ignore if stats don't exist (shouldn't happen if favorite exists)
+      }
+
+      return { favorited: false }
+    }
+    else {
+      // Favorite
+      await db.insert(favorites).values({
+        userId: user.id,
+        componentId,
+        createdAt: new Date(),
+      }).run()
+
+      // Increment stats (upsert)
+      await db.insert(componentStats)
+        .values({ componentId, favorites: 1 })
+        .onConflictDoUpdate({
+          target: componentStats.componentId,
+          set: { favorites: sql`${componentStats.favorites} + 1` },
+        })
         .run()
-    }
-    catch {
-      // Ignore if stats don't exist (shouldn't happen if favorite exists)
-    }
 
-    return { favorited: false }
+      return { favorited: true }
+    }
   }
-  else {
-    // Favorite
-    await db.insert(favorites).values({
-      userId: user.id,
-      componentId,
-      createdAt: new Date(),
-    }).run()
-
-    // Increment stats (upsert)
-    await db.insert(componentStats)
-      .values({ componentId, favorites: 1 })
-      .onConflictDoUpdate({
-        target: componentStats.componentId,
-        set: { favorites: sql`${componentStats.favorites} + 1` },
-      })
-      .run()
-
-    return { favorited: true }
+  catch (error) {
+    console.error('Failed to toggle favorite:', error)
+    // Gracefully handle database errors (e.g. table not found)
+    // Return 503 Service Unavailable instead of 500
+    throw createError({
+      statusCode: 503,
+      statusMessage: 'Service Unavailable',
+      message: 'Database service is currently unavailable. Please try again later.',
+    })
   }
 })
