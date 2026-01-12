@@ -1,5 +1,5 @@
 {
-  "name": "atidraw",
+  "name": "elements",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.7.1",
@@ -11,7 +11,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:migrate:remote": "wrangler d1 migrations apply elements --remote"
   },
   "dependencies": {
     "@iconify-json/logos": "^1.2.4",
