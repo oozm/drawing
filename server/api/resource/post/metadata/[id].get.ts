@@ -1,8 +1,8 @@
 // server/api/resource/post/metadata/[id].get.ts
 export default eventHandler(async (event) => {
   // 1. 获取会话 (如果详情页允许游客看，改用 getUserSession)
-  const session = await getUserSession(event)
-  const user = session?.user
+  // const session = await getUserSession(event)
+  // const user = session?.user
 
   const id = getRouterParam(event, 'id')
   if (!id) {

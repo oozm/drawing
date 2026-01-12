@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
-import { favorites } from '../../database/schema'
-import { useDrizzle } from '../../utils/db'
+import { favorites } from '~~/server/database/schema'
+import { useDrizzle } from '~~/server/utils/db'
 
 export default eventHandler(async (event) => {
   const { user } = await requireUserSession(event)

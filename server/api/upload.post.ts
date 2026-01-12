@@ -56,7 +56,7 @@ export default eventHandler(async (event) => {
     strength: 0.75,
     image: [...new Uint8Array(await drawing.arrayBuffer())],
   })
-    .then((blob: Blob | Uint8Array) => {
+    .then((blob: Blob | Uint8Array | any) => {
       if (blob instanceof Uint8Array) {
         blob = new Blob([blob])
       }
