@@ -4,7 +4,8 @@ export default defineEventHandler(async (event) => {
 
   // 1. 检查是否带有 Uiverse 风格的 _data 标识
   if (query._data === 'routes/$category' && !event.path.startsWith('/api/')) {
-    const category = event.path.split('?')[0].replace('/', '') // 拿到 'buttons' 或 'elements'
+    const rawPath = event.path.split('?')[0] || ''
+    const category = rawPath.replace('/', '') // 拿到 'buttons' 或 'elements'
 
     // 2. 内部重定向或直接调用逻辑
     // 我们直接在这里复用获取数据的逻辑
@@ -25,23 +26,23 @@ export default defineEventHandler(async (event) => {
       const prefix = user ? `components/${user.id}/` : 'components/'
       const list = await hubBlob().list({ prefix, limit: 100 })
 
-      const allComponents = list.blobs.map((blob) => {
+      const allComponents: any = list.blobs.map((blob: any) => {
         const filename = blob.pathname.split('/').pop() || ''
         const parts = filename.replace('.json', '').split('_')
         return {
           id: parts[1] || parts[0],
           type: parts[0] || 'Other',
           pathname: blob.pathname,
-          title: (parts[1] || parts[0]).toUpperCase(),
+          title: ((parts[1] || parts[0]) || '').toUpperCase(),
         }
       })
 
       let filtered = isAll
         ? allComponents
-        : allComponents.filter(c => c.type.toLowerCase() === targetType?.toLowerCase())
+        : allComponents.filter((c: any) => c.type.toLowerCase() === targetType?.toLowerCase())
 
       if (searchQ) {
-        filtered = filtered.filter(c =>
+        filtered = filtered.filter((c: any) =>
           c.title.toLowerCase().includes(searchQ)
           || c.type.toLowerCase().includes(searchQ),
         )

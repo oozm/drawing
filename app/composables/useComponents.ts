@@ -10,11 +10,10 @@ export const useComponents = () => {
     loading.value = true
     const cursor = reset ? null : nextCursor.value
 
-    const query = new URLSearchParams({
-      limit: '20',
-      ...(apiType && { type: apiType }),
-      ...(cursor && { cursor }),
-    })
+    const query = new URLSearchParams()
+    query.set('limit', '20')
+    if (apiType) query.set('type', apiType)
+    if (cursor) query.set('cursor', String(cursor))
 
     try {
       const res = await fetch(`/api/components/list?${query.toString()}`)

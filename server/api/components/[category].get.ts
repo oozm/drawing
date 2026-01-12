@@ -47,14 +47,21 @@ export default eventHandler(async (event) => {
     })
 
     // 解析 Blob 数据
-    const allComponents = list.blobs.map((blob) => {
+    const allComponents: Array<{
+      id: string
+      title: string
+      type: string
+      pathname: string
+      username: string
+      userId: string
+    }> = list.blobs.map((blob) => {
       const filename = blob.pathname.split('/').pop() || ''
       const nameWithoutExt = filename.replace('.json', '')
       const parts = nameWithoutExt.split('_')
 
       // 解析文件类型和 ID
-      const fileType = parts.length > 1 ? parts[0] : 'Other'
-      const fileId = parts.length > 1 ? parts[1] : parts[0]
+      const fileType = parts[0] || 'Other'
+      const fileId = (parts.length > 1 ? parts[1] : parts[0]) || ''
 
       return {
         id: fileId,

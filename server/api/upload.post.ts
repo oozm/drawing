@@ -9,9 +9,9 @@ export default eventHandler(async (event) => {
     limit: 1,
   })
 
-  if (!import.meta.dev && blobs.length) {
-    const [lastDrawing] = blobs
-    if (lastDrawing.customMetadata?.userId === user.id) {
+  if (!import.meta.dev && blobs.length > 0) {
+    const lastDrawing = blobs[0]
+    if (lastDrawing && lastDrawing.customMetadata?.userId === user.id) {
       throw createError({
         statusCode: 400,
         message: 'You cannot upload two drawings in a row. Please wait for someone else to draw an image.',

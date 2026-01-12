@@ -146,7 +146,6 @@ const handleLoadMore = () => {
           variant="none"
           :ui="{
             base: 'bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:ring-blue-500 rounded-xl',
-            input: 'text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400',
           }"
         />
 
@@ -163,7 +162,7 @@ const handleLoadMore = () => {
             size="sm"
             square
             :variant="viewMode === 'grid' ? 'solid' : 'ghost'"
-            :color="viewMode === 'grid' ? 'blue' : 'gray'"
+            :color="viewMode === 'grid' ? 'primary' : 'neutral'"
             @click="viewMode = 'grid'"
           />
           <UButton
@@ -171,14 +170,14 @@ const handleLoadMore = () => {
             size="sm"
             square
             :variant="viewMode === 'list' ? 'solid' : 'ghost'"
-            :color="viewMode === 'list' ? 'blue' : 'gray'"
+            :color="viewMode === 'list' ? 'primary' : 'neutral'"
             @click="viewMode = 'list'"
           />
         </div>
 
         <UButton
           :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
-          :color="isDark ? 'yellow' : 'blue'"
+          :color="isDark ? 'warning' : 'primary'"
           variant="ghost"
           size="md"
           class="transition-colors duration-300"
@@ -187,7 +186,7 @@ const handleLoadMore = () => {
 
         <UButton
           icon="i-heroicons-plus-solid"
-          color="pink"
+          color="secondary"
           variant="solid"
           size="md"
           label="Create"
@@ -207,7 +206,7 @@ const handleLoadMore = () => {
             label="All Components"
             block
             :variant="currentType === null ? 'solid' : 'ghost'"
-            :color="currentType === null ? 'blue' : 'gray'"
+            :color="currentType === null ? 'primary' : 'neutral'"
             @click="currentType = null"
           />
 
@@ -217,7 +216,7 @@ const handleLoadMore = () => {
             :label="type"
             block
             :variant="currentType === type ? 'solid' : 'ghost'"
-            :color="currentType === type ? 'blue' : 'gray'"
+            :color="currentType === type ? 'primary' : 'neutral'"
             @click="currentType = type"
           />
         </nav>
@@ -229,7 +228,7 @@ const handleLoadMore = () => {
             label="My favorites"
             block
             variant="ghost"
-            color="gray"
+            color="neutral"
           />
         </div>
       </aside>
@@ -247,7 +246,7 @@ const handleLoadMore = () => {
         <UAlert
           v-if="error"
           icon="i-heroicons-exclamation-triangle-20-solid"
-          color="red"
+          color="error"
           variant="solid"
           title="Error"
           :description="error"
@@ -256,7 +255,7 @@ const handleLoadMore = () => {
           <template #actions>
             <UButton
               label="Retry"
-              color="red"
+              color="error"
               variant="link"
               @click="fetchComponents(true, null)"
             />
@@ -295,7 +294,7 @@ const handleLoadMore = () => {
           <UButton
             v-if="hasMore && components.length > 0"
             :disabled="loading"
-            color="blue"
+            color="primary"
             variant="solid"
             size="xl"
             :label="loading ? 'Loading...' : 'Load More Components'"
