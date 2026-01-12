@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "elements",
+  "name": "zhaojs",
   "compatibility_date": "2024-11-01",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./dist/server/index.mjs",
