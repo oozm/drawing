@@ -41,24 +41,25 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Verify Cloudflare Auth
-        run: pnpm exec wrangler whoami --log-level debug
+        run: pnpm exec wrangler whoami
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Debug D1 Access
-        run: pnpm exec wrangler d1 info elements --config wrangler.jsonc --log-level debug
+        run: pnpm exec wrangler d1 info elements --config wrangler.jsonc
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Apply D1 Migrations
+        id: d1_migrate
+        continue-on-error: true
         run: |
           set -euo pipefail
           export FORCE_COLOR=0
           export WRANGLER_LOG=debug
           export WRANGLER_LOG_PATH="$RUNNER_TEMP/wrangler-debug.log"
-          pnpm exec wrangler d1 migrations apply elements --remote --config wrangler.jsonc"
+          pnpm exec wrangler d1 migrations apply elements --remote --config wrangler.jsonc 2>&1 | tee "$RUNNER_TEMP/wrangler-migrate.out"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -79,3 +80,7 @@ jobs:
           else
             echo "No debug log file found."
           fi
+
+      - name: Fail if migrations failed
+        if: steps.d1_migrate.outcome != 'success'
+        run: exit 1

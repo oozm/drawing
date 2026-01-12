@@ -66,8 +66,6 @@ export default eventHandler(async (event) => {
   }
   catch (error) {
     console.error('Failed to toggle favorite:', error)
-    // Gracefully handle database errors (e.g. table not found)
-    // Return 503 Service Unavailable instead of 500
     throw createError({
       statusCode: 503,
       statusMessage: 'Service Unavailable',
