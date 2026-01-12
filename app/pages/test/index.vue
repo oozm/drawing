@@ -47,8 +47,9 @@ async function getFeedbacks() {
     const data = await $api<{ feedbacks: Feedback[], cursor: string, hasMore: boolean }>('/api/feedback')
     feedbacks.value = data.feedbacks || [] as Feedback[]
     console.log('feedbacks', feedbacks.value)
-  } catch {
-     // Global error handler
+  }
+  catch {
+    // Global error handler
   }
   loading.value = false
 }

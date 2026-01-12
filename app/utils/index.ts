@@ -1,5 +1,3 @@
-import { CATEGORIES } from '../../types/create' // 假设 CATEGORIES 路径不变
-
 // 定义代码结构类型
 interface CodeBlock {
   html: string
@@ -110,7 +108,7 @@ export const loadTemplate = (type: string, tech: string): CodeBlock => {
   height: 34px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;

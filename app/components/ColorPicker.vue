@@ -43,7 +43,11 @@ function setColor(hex: string) {
     :ui="{ content: 'w-[156px]' }"
   >
     <template #default="{ open }">
-      <slot name="trigger" :open="open" :color="current">
+      <slot
+        name="trigger"
+        :open="open"
+        :color="current"
+      >
         <UButton
           color="neutral"
           variant="ghost"
@@ -85,18 +89,19 @@ function setColor(hex: string) {
             @click="setColor(color)"
           />
         </div>
-        
+
         <hr class="border-(--ui-border-muted) my-2">
-        
-        <!-- Custom Color Input -->
+
         <div class="flex items-center gap-2">
-           <div class="text-xs text-gray-500">Custom</div>
-           <input 
-             type="color" 
-             :value="current"
-             class="flex-1 h-6 cursor-pointer bg-transparent border-0 p-0"
-             @input="setColor(($event.target as HTMLInputElement).value)"
-           />
+          <div class="text-xs text-gray-500">
+            Custom
+          </div>
+          <input
+            type="color"
+            :value="current"
+            class="flex-1 h-6 cursor-pointer bg-transparent border-0 p-0"
+            @input="setColor(($event.target as HTMLInputElement).value)"
+          >
         </div>
       </div>
     </template>

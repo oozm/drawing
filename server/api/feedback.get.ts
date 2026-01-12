@@ -1,6 +1,6 @@
 // server/api/feedback.get.ts
 export default eventHandler(async (event) => {
-  const { user } = await requireUserSession(event)
+  await requireUserSession(event)
   // 简单判断：只有某个 id 或 provider 才能看
   // if (user.provider !== 'github') {
   //   throw createError({ statusCode: 403, statusMessage: 'Forbidden' })

@@ -31,15 +31,15 @@ export default defineNuxtConfig({
       openAPI: true,
     },
   },
-  hooks: {
-    'nitro:config': (nitroConfig) => {
-      nitroConfig.preset = 'cloudflare-module'
-    },
-  },
   hub: {
     ai: true,
     blob: true,
     database: true,
+  },
+  hooks: {
+    'nitro:config': (nitroConfig) => {
+      nitroConfig.preset = 'cloudflare-module'
+    },
   },
   // Development modules
   eslint: {
