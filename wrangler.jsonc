@@ -3,9 +3,9 @@
   "name": "zhaojs",
   "compatibility_date": "2025-01-12",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "./dist/server/index.mjs",
+  "main": "./.output/server/index.mjs",
   "assets": {
-    "directory": "./dist/public",
+    "directory": "./.output/public",
     "binding": "ASSETS"
   },
   "observability": {

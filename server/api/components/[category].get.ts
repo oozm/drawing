@@ -35,8 +35,11 @@ export default eventHandler(async (event) => {
   const targetType = isAll ? null : formatType(categoryParam || '')
 
   // 5. 存储路径前缀
-  // 逻辑：如果登录了，只看自己的；没登录，看公共的。
-  const prefix = user ? `components/${user.id}/` : 'components/'
+  // 逻辑：默认查看公共（所有），如果指定 scope=mine 且已登录，则只看自己的
+  const scope = query.scope as string
+  const prefix = (scope === 'mine' && user) 
+    ? `components/${user.id}/` 
+    : 'components/'
 
   try {
     // 获取 Blob 列表

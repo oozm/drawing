@@ -275,6 +275,10 @@ const userMenuItems = ref<any>([
     type: 'label',
   }],
   [{
+    label: 'Profile',
+    icon: 'i-heroicons-user',
+    onSelect: () => navigateTo('/profile'),
+  }, {
     label: 'Favorites',
     icon: 'i-heroicons-heart',
     onSelect: () => navigateTo('/my-favorites'),
