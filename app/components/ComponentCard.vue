@@ -6,8 +6,11 @@ const props = defineProps<{
     id: string | number
     title: string
     type: string
-    username?: string
-    avatar?: string
+    user: {
+      userName: string
+      avatar: string
+      id: string | number
+    }
   }
 }>()
 
@@ -131,7 +134,7 @@ watch(() => props.component?.id, (newId) => {
 }, { immediate: true })
 
 const getDetailLink = () => {
-  const username = props.component.username || 'community'
+  const username = props.component?.user?.userName || 'community'
   const slug = props.component.id
   // Ensure username is URL safe
   const safeUsername = username.replace(/\s+/g, '-').toLowerCase()
@@ -191,13 +194,13 @@ const getDetailLink = () => {
       <!-- User Info -->
       <div class="flex items-center gap-2 min-w-0">
         <UAvatar
-          :alt="component?.avatar || 'C'"
+          :alt="metadata?.user?.avatar || 'C'"
           size="xs"
           class="bg-gray-800"
-          :src="component?.avatar || '/avatar.svg'"
+          :src="metadata?.user?.avatar || '/avatar.svg'"
         />
         <div class="flex flex-col min-w-0">
-          <span class="text-sm font-medium text-gray-200 truncate">{{ component.username || 'Community' }}</span>
+          <span class="text-sm font-medium text-gray-200 truncate">{{ metadata?.user?.userName || 'Community' }}</span>
         </div>
       </div>
 

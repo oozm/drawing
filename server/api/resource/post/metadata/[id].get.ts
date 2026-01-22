@@ -40,8 +40,9 @@ export default eventHandler(async (event) => {
       mode: data.mode || 'dark',
       type: data.type,
       user: {
-        name: data.username || 'Anonymous',
+        userName: data.username || 'Anonymous',
         id: data.userId,
+        avatar: data.avatar || '',
       },
       stats: {
         likes: data.likes || 0,

@@ -46,7 +46,7 @@ const toggleColorMode = () => {
 // Fetch Data
 const { data: component, pending, error } = await useAsyncData<any>(
   `component-${slug}`,
-  () => $api(`/api/resource/post/metadata/${slug}`, {
+  () => $api(`/api/resource/post/metadata/${slug}` as any, {
     params: { _data: 'routes/resource.post.metadata.$id' },
   }),
 )
