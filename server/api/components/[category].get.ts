@@ -57,6 +57,7 @@ export default eventHandler(async (event) => {
       pathname: string
       username: string
       userId: string
+      avatar?: string
     }> = list.blobs.map((blob) => {
       const filename = blob.pathname.split('/').pop() || ''
       const nameWithoutExt = filename.replace('.json', '')
@@ -66,13 +67,21 @@ export default eventHandler(async (event) => {
       const fileType = parts[0] || 'Other'
       const fileId = (parts.length > 1 ? parts[1] : parts[0]) || ''
 
+      // 尝试从路径解析 userId: components/userId/filename
+      const pathParts = blob.pathname.split('/')
+      const pathUserId = pathParts.length > 2 ? pathParts[1] : 'public'
+
+      // 读取自定义元数据 (如果有)
+      const meta = (blob as any).customMetadata || {}
+
       return {
         id: fileId,
-        title: fileId.toUpperCase(),
-        type: fileType, // 例如 "Button"
+        title: meta.title || fileId.toUpperCase(),
+        type: meta.type || fileType, // 例如 "Button"
         pathname: blob.pathname,
-        username: user?.name || 'Community User',
-        userId: user?.id || 'public',
+        username: meta.username || 'Community User',
+        userId: meta.userId || pathUserId,
+        avatar: meta.avatar || '/avatar.svg',
       }
     })
 

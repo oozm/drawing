@@ -32,26 +32,27 @@ export default eventHandler(async (event) => {
       .substring(0, 16)
   }
 
-  // 1. 构造存储对象：关键在于 ...body 放在前面，强制字段放在后面
+  // 1. 构造存储对象
   const componentData = {
-    ...body, // 包含前端传来的 title, html, css, type 等
+    ...body,
     userId: user.id,
+    username: user.name,
+    avatar: user.avatar,
     lastUpdated: new Date().toISOString(),
-    // 【核心防御】强制锁定状态为 1 (Pending)，前端传什么都没用
+    // 【核心防御】强制锁定状态为 1 (Pending)
     status: 1 as ComponentStatus,
   }
+
   // 2. 生成唯一 ID
   const componentId = generateContentId(user.id, body.html, body.css, body.bgColor || '', body.mode || 'dark')
+
   // 3. 构建路径
   const blobPath = `components/${user.id}/${body.type}_${componentId}.json`
   console.log('blobPath', blobPath)
 
   // --- 4. 安全检查：确保是新建，不是修改 ---
   try {
-    // 尝试获取文件元数据
     const existing = await hubBlob().head(blobPath)
-
-    // 如果没有抛出异常，说明文件已存在
     if (existing) {
       throw createError({
         statusCode: 409,
@@ -60,25 +61,28 @@ export default eventHandler(async (event) => {
     }
   }
   catch (e: any) {
-    // 关键点：如果我们捕获到的是上面刚刚 throw 的 409 错误，必须再次 throw 出来
-    // 这样才能阻止代码运行到下面的 hubBlob().put()
-    if (e.statusCode === 409) {
-      throw e
-    }
-
-    // 如果是 404，说明文件不存在，这是我们期望的，不做任何处理，让程序继续往下走
+    if (e.statusCode === 409) throw e
     if (e?.statusCode !== 404) {
-      // 如果是其他错误（如网络问题），为了安全起见，建议也抛出错误阻止保存
       console.error('Check failed:', e)
       throw createError({ statusCode: 500, statusMessage: 'Storage check failed.' })
     }
   }
+
   try {
-    // 5. 执行保存
+    // 5. 执行保存，同时写入自定义元数据以便列表页快速读取
     await hubBlob().put(
       blobPath,
       JSON.stringify(componentData, null, 2),
-      { contentType: 'application/json' },
+      {
+        contentType: 'application/json',
+        customMetadata: {
+          title: body.title,
+          username: user.name,
+          avatar: user.avatar,
+          userId: user.id,
+          type: body.type
+        }
+      },
     )
 
     return {

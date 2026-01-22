@@ -7,6 +7,7 @@ const props = defineProps<{
     title: string
     type: string
     username?: string
+    avatar?: string
   }
 }>()
 
@@ -190,9 +191,10 @@ const getDetailLink = () => {
       <!-- User Info -->
       <div class="flex items-center gap-2 min-w-0">
         <UAvatar
-          :alt="component.username || 'C'"
+          :alt="component?.avatar || 'C'"
           size="xs"
           class="bg-gray-800"
+          :src="component?.avatar || '/avatar.svg'"
         />
         <div class="flex flex-col min-w-0">
           <span class="text-sm font-medium text-gray-200 truncate">{{ component.username || 'Community' }}</span>
