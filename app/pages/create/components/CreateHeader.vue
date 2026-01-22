@@ -45,6 +45,7 @@ const props = defineProps<{
   techStack: string
   type: string
   bgColor: string
+  mode: string
 }>()
 
 const handleSubmit = async () => {
@@ -60,6 +61,7 @@ const handleSubmit = async () => {
         css: props.code.css,
         techStack: props.techStack,
         type: props.type,
+        mode: props.mode,
       },
     })
     toast.add({

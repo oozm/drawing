@@ -145,7 +145,10 @@ const getDetailLink = () => {
   >
     <!-- Preview Area -->
     <div
-      class="relative min-h-[300px] w-full bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#333] transition-all hover:border-gray-500 hover:shadow-xl cursor-pointer"
+      class="relative min-h-[300px] w-full  rounded-xl overflow-hidden border border-[#333] transition-all hover:border-gray-500 hover:shadow-xl cursor-pointer"
+      :style="{
+        backgroundColor: metadata?.bgColor || '#1a1a1a',
+      }"
       @click="navigateTo(getDetailLink())"
     >
       <div class="h-full bg-black/40 flex items-center justify-center relative">

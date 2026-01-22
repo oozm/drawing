@@ -57,7 +57,7 @@ const categoryParam = computed(() => (route.params.category as string) || 'eleme
 // 这里的请求地址现在变成了当前页面路径本身
 const { data } = await useAsyncData(
   `data-${route.params.category}-${route.query.q}`,
-  () => $api(route.path, { // 以前是 /api/components/... 现在直接用 route.path
+  () => $api(route.path, {
     params: {
       _data: 'routes/$category',
       page: 1,

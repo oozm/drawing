@@ -36,6 +36,8 @@ export default eventHandler(async (event) => {
       title: data.title || 'Untitled Component',
       html: data.html,
       css: data.css,
+      bgColor: data.bgColor || '',
+      mode: data.mode || 'dark',
       type: data.type,
       user: {
         name: data.username || 'Anonymous',

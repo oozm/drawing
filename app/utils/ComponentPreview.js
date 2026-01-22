@@ -33,6 +33,14 @@ if (typeof window !== 'undefined') {
       wrapper.innerHTML = html
       wrapper.style.display = 'contents' // 确保内容可以灵活布局
 
+      // 3. 应用主题模式
+      // if (mode === 'dark') {
+      //   wrapper.classList.add('dark')
+      // }
+      // else {
+      //   wrapper.classList.remove('dark')
+      // }
+
       shadowRoot.appendChild(wrapper)
     }
   }

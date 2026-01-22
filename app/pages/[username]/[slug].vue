@@ -4,7 +4,6 @@ import '~/utils/ComponentPreview.js'
 
 const { $api } = useNuxtApp()
 const route = useRoute()
-const router = useRouter()
 const username = route.params.username as string
 const slug = route.params.slug as string
 
@@ -35,7 +34,7 @@ const previewRef = ref<any>(null)
 const colorMode = ref('light')
 const renderPreview = () => {
   if (previewRef.value) {
-    previewRef.value.render()
+    previewRef.value?.render?.()
   }
 }
 
@@ -51,14 +50,17 @@ const { data: component, pending, error } = await useAsyncData<any>(
     params: { _data: 'routes/resource.post.metadata.$id' },
   }),
 )
+bgColor.value = component?.value.bgColor || '#e8e8e8'
 
 // Update preview when data is ready
 watch(component, async (newData: any) => {
   if (newData && previewRef.value) {
     await nextTick()
+
     previewRef.value.componentData = {
       html: newData?.html || '',
       css: newData?.css || '',
+      mode: newData?.mode || 'light',
     }
   }
 }, { immediate: true })
@@ -69,14 +71,10 @@ onMounted(async () => {
     previewRef.value.componentData = {
       html: (component.value as any)?.html || '',
       css: (component.value as any)?.css || '',
+      mode: (component.value as any)?.mode || 'light',
     }
   }
 })
-
-// Go back handler
-const _goBack = () => {
-  router.push('/elements')
-}
 
 // Stats (Mocked or from data)
 const stats = computed(() => (component.value as any)?.stats || { likes: 0, views: 0 })
@@ -85,7 +83,7 @@ const _authorId = computed(() => (component.value as any)?.user?.id || 'communit
 </script>
 
 <template>
-  <div class="h-[calc(100vh-4rem)] flex overflow-hidden bg-[#0a0a0a] text-white">
+  <div class="h-[calc(100vh-4rem)] flex overflow-hidden  text-white">
     <!-- Left Sidebar -->
     <aside class="w-64 flex-shrink-0 bg-black border-r border-gray-800 flex flex-col">
       <div class="flex-1 overflow-y-auto p-2">
@@ -151,11 +149,11 @@ const _authorId = computed(() => (component.value as any)?.user?.id || 'communit
               <span class="text-xs text-gray-500 font-mono">{{ bgColor }}</span>
               <div class="flex px-2 items-center gap-2 bg-[var(--bg-color)] dark:bg-gray-800 rounded p-0.5">
                 <ColorPicker v-model="bgColor">
-                  <template #trigger="{ color }">
+                  <template #trigger>
                     <button
                       type="button"
+                      :style="{ backgroundColor: bgColor }"
                       class="w-5 h-5 rounded hover:scale-110 transition-transform border border-gray-600"
-                      :style="{ '--bg-color': color }"
                     />
                   </template>
                 </ColorPicker>

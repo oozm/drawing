@@ -12,6 +12,8 @@ interface ComponentData {
   type: ComponentType
   // 这里明确定义，即使 body 传了 status 也会被忽略
   status?: never
+  bgColor?: string
+  mode?: 'dark' | 'light'
 }
 
 export default eventHandler(async (event) => {
@@ -23,9 +25,9 @@ export default eventHandler(async (event) => {
   }
 
   // 根据内容生成固定 ID 的函数
-  function generateContentId(userId: string, html: string, css: string) {
+  function generateContentId(userId: string, html: string, css: string, bgColor: string, mode: string) {
     return createHash('sha256')
-      .update(`${userId}-${html}-${css}`)
+      .update(`${userId}-${html}-${css}-${bgColor}-${mode}`)
       .digest('hex')
       .substring(0, 16)
   }
@@ -39,7 +41,7 @@ export default eventHandler(async (event) => {
     status: 1 as ComponentStatus,
   }
   // 2. 生成唯一 ID
-  const componentId = generateContentId(user.id, body.html, body.css)
+  const componentId = generateContentId(user.id, body.html, body.css, body.bgColor || '', body.mode || 'dark')
   // 3. 构建路径
   const blobPath = `components/${user.id}/${body.type}_${componentId}.json`
   console.log('blobPath', blobPath)

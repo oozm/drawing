@@ -96,10 +96,11 @@
             }"
             @click="console.log('Google login')"
           />
+          <!-- 或者 开发 模式 也是游客登录 -->
           <UButton
-            v-if="!authProviders.github && !authProviders.google"
+            v-if="(!authProviders?.github && !authProviders?.google) || isDev"
             to="/auth/anonymous"
-            label="Sign-in anonymously"
+            label="Guest Login"
             icon="i-ph-mask-happy-duotone"
             color="neutral"
             size="lg"
@@ -151,6 +152,8 @@ const isOpen = computed({
   get: () => props.modelValue,
   set: value => emit('update:modelValue', value),
 })
+
+const isDev = import.meta.dev
 </script>
 
 <style scoped>

@@ -16,7 +16,7 @@
           </ColorPicker>
           <!-- 主题切换 -->
           <UButton
-            :icon="colorMode === 'light' ? 'i-lucide-moon' : 'i-lucide-sun'"
+            :icon="colorMode === 'light' ? 'i-lucide-sun' : 'i-lucide-moon'"
             :aria-label="`Switch to ${colorMode === 'light' ? 'light' : 'dark'} mode`"
             color="neutral"
             variant="ghost"
@@ -43,12 +43,13 @@ interface CodeBlock { html: string, css: string }
 const props = defineProps<{
   code: CodeBlock
   selectedTech: string
+  mode: string
 }>()
 
 // Define Emits
 
-const colorMode = ref('light')
-const bgColor = ref('#e8e8e8')
+const colorMode = ref(props.mode)
+const bgColor = ref('')
 const previewRef = ref<HTMLIFrameElement | null>(null)
 
 const toggleColorMode = () => {
@@ -121,7 +122,7 @@ const renderPreview = () => {
   doc.write(iframeContent)
   doc.close()
 }
-const emit = defineEmits(['update:bgColor'])
+const emit = defineEmits(['update:bgColor', 'update:mode'])
 // Render on first mount
 onMounted(() => {
   renderPreview()

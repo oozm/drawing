@@ -9,6 +9,7 @@
       :bg-color="bgColor"
       :tech-stack="selectedTech"
       :type="currentType"
+      :mode="mode"
       @select="handleInit"
     />
 
@@ -16,6 +17,7 @@
     <div class="flex-1 flex overflow-hidden mt-4">
       <!-- 左侧预览区组件 (PreviewPanel) -->
       <PreviewPanel
+        v-model:mode="mode"
         :code="code"
         :selected-tech="selectedTech"
         @update:bg-color="bgColor = $event"
@@ -43,6 +45,7 @@ const bgColor = ref('')
 
 const colorMode = useColorMode()
 const isDark = computed(() => colorMode.value === 'dark')
+const mode = ref(isDark.value ? 'dark' : 'light')
 
 const currentTypeLabel = ref()
 const currentType = ref('button')
