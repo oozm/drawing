@@ -25,3 +25,60 @@ npx wrangler d1 list
 npx wrangler r2 bucket list
 ```
 请将输出结果（包含 ID 的部分）发给我，我帮您把配置文件填好。如果不方便操作，我可以先给您生成一个带占位符的模板。
+npx wrangler d1 list
+
+ ⛅️ wrangler 4.20.1 (update available 4.59.3)
+─────────────────────────────────────────────
+
+✘ [ERROR] A request to the Cloudflare API (/accounts/68b20c6f6c75a9f3708f05ffd42e7447/d1/database) failed.
+
+  Authentication error [code: 10000]
+
+
+Getting User settings...
+👋 You are logged in with an OAuth Token, associated with the email okxdev@gmail.com.
+┌────────────────┬──────────────────────────────────┐
+│ Account Name   │ Account ID                       │
+├────────────────┼──────────────────────────────────┤
+│ zhaojs Account │ 68b20c6f6c75a9f3708f05ffd42e7447 │
+└────────────────┴──────────────────────────────────┘
+🔓 Token Permissions: If scopes are missing, you may need to logout and re-login.
+Scope (Access)
+- account (read)
+- user (read)
+- workers (write)
+- workers_kv (write)
+- workers_routes (write)
+- workers_scripts (write)
+- workers_tail (read)
+- d1 (write)
+- pages (write)
+- zone (read)
+- ssl_certs (write)
+- ai (write)
+- queues (write)
+- pipelines (write)
+- secrets_store (write)
+- offline_access 
+🎢 Membership roles in "zhaojs Account": Contact account super admin to change your permissions.
+- Super Administrator - All Privileges
+
+(TraeAI-3) ~/Desktop/demo/drawing [1] $ npx wrangler r2 bucket list
+
+ ⛅️ wrangler 4.20.1 (update available 4.59.3)
+─────────────────────────────────────────────
+Listing buckets...
+name:           elements
+creation_date:  2026-01-12T01:59:43.351Z
+
+name:           elments
+creation_date:  2026-01-12T01:44:10.272Z
+
+name:           test
+creation_date:  2025-12-10T10:32:39.262Z
+
+name:           zhaojs
+creation_date:  2025-11-17T06:18:45.717Z
+
+name:           zhaojs-preview
+creation_date:  2025-11-22T07:20:37.944Z
