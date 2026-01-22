@@ -9,9 +9,7 @@ export default defineNuxtConfig({
   ],
   $development: {
     hub: {
-      projectUrl() {
-        return 'https://uilist.com'
-      },
+      projectUrl: 'https://uilist.com',
     },
   },
   devtools: { enabled: true },
