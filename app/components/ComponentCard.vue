@@ -78,9 +78,7 @@ const fetchMetadata = async () => {
   try {
     // Parallel fetch
     const [data] = await Promise.all([
-      $api<any>(`/api/resource/post/metadata/${props.component.id}`, {
-        params: { _data: 'routes/resource.post.metadata.$id' },
-      }),
+      $api<any>(`/api/resource/post/metadata/${props.component.id}`),
       fetchStats(),
     ])
 
