@@ -217,7 +217,16 @@ const isLoginOpen = ref(false)
 const { loggedIn, clear, user } = useUserSession()
 
 const navItems = [
-  { label: 'Elements', to: '/elements' },
+  { label: 'All', icon: 'i-heroicons-book-open', to: '/elements', type: null },
+  { label: 'Buttons', icon: 'i-heroicons-play-circle', to: '/buttons', type: 'buttons' },
+  { label: 'Checkboxes', icon: 'i-heroicons-check-circle', to: '/checkboxes', type: 'checkboxes' },
+  { label: 'Toggle switches', icon: 'i-heroicons-arrows-right-left', to: '/toggle', type: 'toggle' },
+  { label: 'Cards', icon: 'i-heroicons-square-2-stack', to: '/card', type: 'card' },
+  { label: 'Loaders', icon: 'i-heroicons-arrow-path', to: '/loader', type: 'loader' },
+  { label: 'Inputs', icon: 'i-heroicons-pencil-square', to: '/input', type: 'input' },
+  { label: 'Radio buttons', icon: 'i-heroicons-list-bullet', to: '/radio', type: 'radio' },
+  { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', type: 'form' },
+
   // { label: 'Challenges', to: '/challenges', isLive: true },
   // { label: 'Spotlight', to: '/spotlight' },
   // { label: 'Blog', to: '/blog' },
