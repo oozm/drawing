@@ -4,8 +4,8 @@ export default defineNuxtPlugin(() => {
 
   const apiFetch = $fetch.create({
     // 请求拦截
-    onRequest({ options }) {
-      console.log(options)
+    onRequest() {
+      // console.log(options)
       // 可以在这里统一注入 Token 等
       // options.headers = { ...options.headers, Authorization: '...' }
     },
