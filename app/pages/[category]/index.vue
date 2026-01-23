@@ -36,13 +36,6 @@ const CATEGORIES: ICategory[] = [
   { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', type: 'form' },
 ]
 
-// --- 主题控制保持不变 ---
-const colorMode = useColorMode()
-const isDark = computed({
-  get: () => colorMode.preference === 'dark',
-  set: (val: boolean) => colorMode.preference = val ? 'dark' : 'light',
-})
-
 // --- 响应式状态 ---
 const components = ref<IComponentData[]>([])
 const loading = ref(false)
@@ -181,12 +174,12 @@ const currentType = computed(() => categoryParam.value)
               :ui="{ base: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl' }"
               @keydown.enter="handleSearch"
             />
-            <UButton
-              :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
+            <!-- <UButton
+              :icon="colorMode === 'dark' ? 'i-heroicons-sun' : 'i-heroicons-moon'"
               color="neutral"
               variant="ghost"
-              @click="isDark = !isDark"
-            />
+              @click="colorMode = colorMode === 'dark' ? 'light' : 'dark'"
+            /> -->
           </div>
         </div>
 

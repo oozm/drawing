@@ -22,29 +22,81 @@
 
         <!-- 中间导航：桌面 -->
         <nav class="hidden items-center gap-1 text-sm md:flex">
-          <UButton
+          <template
             v-for="item in navItems"
             :key="item.to"
-            :to="item.to"
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            class="rounded-lg px-3 py-1.5 bg-transparent"
-            trailing-icon="i-lucide-chevron-down"
-            :class="
-              isActive(item)
-                ? 'bg-slate-900 text-slate-50 font-semibold'
-                : 'text-slate-900 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-50 dark:hover:bg-slate-900 dark:hover:text-slate-50/90'
-            "
           >
-            <span class="inline-flex items-center gap-1">
-              {{ item.label }}
-              <!-- <span
-                v-if="item.isLive"
-                class="h-1.5 w-1.5 rounded-full bg-emerald-400"
-              /> -->
-            </span>
-          </UButton>
+            <UPopover
+              v-if="item.children"
+              mode="hover"
+              :open-delay="0"
+              :close-delay="100"
+              :popper="{ placement: 'bottom-start' }"
+            >
+              <UButton
+                :to="item.to"
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                class="rounded-lg px-3 py-1.5 bg-transparent"
+                trailing-icon="i-lucide-chevron-down"
+                :class="
+                  isActive(item)
+                    ? 'bg-slate-900 text-slate-50 font-semibold'
+                    : 'text-slate-900 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-50 dark:hover:bg-slate-900 dark:hover:text-slate-50/90'
+                "
+              >
+                <span class="inline-flex items-center gap-1">
+                  {{ item.label }}
+                </span>
+              </UButton>
+
+              <template #content>
+                <div class="w-[600px] p-4 bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-gray-100 dark:border-zinc-800">
+                  <div class="grid grid-cols-2 gap-2">
+                    <NuxtLink
+                      v-for="child in item.children"
+                      :key="child.to"
+                      :to="child.to"
+                      class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800/50 transition-colors group"
+                    >
+                      <UIcon
+                        :name="child.icon"
+                        class="w-5 h-5 text-gray-400 group-hover:text-primary-500 dark:text-gray-500 dark:group-hover:text-primary-400 transition-colors"
+                      />
+                      <div class="flex-1 flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                          {{ child.label }}
+                        </span>
+                        <!-- <span v-if="child.count" class="text-xs text-gray-400 dark:text-gray-600">
+                          {{ child.count }}
+                        </span> -->
+                      </div>
+                    </NuxtLink>
+                  </div>
+                </div>
+              </template>
+            </UPopover>
+
+            <UButton
+              v-else
+              :to="item.to"
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              class="rounded-lg px-3 py-1.5 bg-transparent"
+              trailing-icon="i-lucide-chevron-down"
+              :class="
+                isActive(item)
+                  ? 'bg-slate-900 text-slate-50 font-semibold'
+                  : 'text-slate-900 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-50 dark:hover:bg-slate-900 dark:hover:text-slate-50/90'
+              "
+            >
+              <span class="inline-flex items-center gap-1">
+                {{ item.label }}
+              </span>
+            </UButton>
+          </template>
         </nav>
       </div>
 
@@ -53,14 +105,14 @@
         <!-- Create -->
         <UButton
           size="lg"
+          label="Create"
+          icon="i-lucide-plus"
           class="rounded-full bg-gradient-to-r from-fuchsia-500 to-indigo-500 text-white shadow-md shadow-fuchsia-500/30 hover:brightness-110 border-0"
           @click="handleCreate"
-        >
-          Create
-        </UButton>
+        />
 
         <!-- 主题切换 -->
-        <ClientOnly v-if="!colorMode?.forced">
+        <!-- <ClientOnly v-if="!colorMode?.forced">
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
             :aria-label="`Switch to ${isDark ? 'light' : 'dark'} mode`"
@@ -69,7 +121,7 @@
             class="rounded-full"
             @click="toggleColorMode"
           />
-        </ClientOnly>
+        </ClientOnly> -->
         <template v-if="loggedIn">
           <UDropdownMenu
             :items="userMenuItems"
@@ -132,21 +184,49 @@
               </p>
 
               <div class="space-y-1 rounded-lg bg-slate-100/80 p-1 dark:bg-slate-900/60">
-                <NuxtLink
+                <template
                   v-for="item in navItems"
                   :key="item.to"
-                  :to="item.to"
-                  class="flex items-center justify-between rounded-md px-3 py-2 text-sm"
-                  :class="
-                    isActive(item)
-                      ? 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-50'
-                      : 'text-slate-700 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800'
-                  "
-                  @click="closeMobile"
                 >
-                  <span>{{ item.label }}</span>
+                  <!-- 如果有子菜单，直接展示所有子菜单项 -->
+                  <template v-if="item.children">
+                    <NuxtLink
+                      v-for="child in item.children"
+                      :key="child.to"
+                      :to="child.to"
+                      class="flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                      :class="
+                        isActive(child)
+                          ? 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-50'
+                          : 'text-slate-700 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800'
+                      "
+                      @click="closeMobile"
+                    >
+                      <div class="flex items-center gap-2">
+                        <UIcon
+                          :name="child.icon"
+                          class="w-4 h-4 text-gray-500"
+                        />
+                        <span>{{ child.label }}</span>
+                      </div>
+                    </NuxtLink>
+                  </template>
 
-                </NuxtLink>
+                  <!-- 没有子菜单的普通项 -->
+                  <NuxtLink
+                    v-else
+                    :to="item.to"
+                    class="flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                    :class="
+                      isActive(item)
+                        ? 'bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-50'
+                        : 'text-slate-700 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800'
+                    "
+                    @click="closeMobile"
+                  >
+                    <span>{{ item.label }}</span>
+                  </NuxtLink>
+                </template>
               </div>
             </div>
 
@@ -194,16 +274,12 @@
 
           <!-- 底部退出 -->
           <UButton
-            block
-            to="/logout"
             color="neutral"
             variant="ghost"
-            class="flex items-center gap-2 rounded-none border-t px-4 py-3 justify-start text-sm text-slate-700 hover:bg-slate-200 border-slate-200 dark:text-slate-300 dark:hover:bg-slate-900 dark:border-slate-800"
-            icon="i-heroicons-arrow-uturn-left-20-solid"
-            @click="closeMobile"
-          >
-            Log out
-          </UButton>
+            icon="i-heroicons-arrow-right-on-rectangle"
+            label="Sign out"
+            @click="handleLogout"
+          />
         </div>
       </div>
     </USlideover>
@@ -216,20 +292,25 @@ const isMobileOpen = ref(false)
 const isLoginOpen = ref(false)
 const { loggedIn, clear, user } = useUserSession()
 
-const navItems = [
-  { label: 'All', icon: 'i-heroicons-book-open', to: '/elements', type: null },
-  { label: 'Buttons', icon: 'i-heroicons-play-circle', to: '/buttons', type: 'buttons' },
-  { label: 'Checkboxes', icon: 'i-heroicons-check-circle', to: '/checkboxes', type: 'checkboxes' },
-  { label: 'Toggle switches', icon: 'i-heroicons-arrows-right-left', to: '/toggle', type: 'toggle' },
-  { label: 'Cards', icon: 'i-heroicons-square-2-stack', to: '/card', type: 'card' },
-  { label: 'Loaders', icon: 'i-heroicons-arrow-path', to: '/loader', type: 'loader' },
-  { label: 'Inputs', icon: 'i-heroicons-pencil-square', to: '/input', type: 'input' },
-  { label: 'Radio buttons', icon: 'i-heroicons-list-bullet', to: '/radio', type: 'radio' },
-  { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', type: 'form' },
+const categories = [
+  { label: 'All', icon: 'i-heroicons-book-open', to: '/elements', count: '' },
+  { label: 'Buttons', icon: 'i-heroicons-play-circle', to: '/buttons', count: '2595' },
+  { label: 'Checkboxes', icon: 'i-heroicons-check-circle', to: '/checkboxes', count: '315' },
+  { label: 'Toggle switches', icon: 'i-heroicons-arrows-right-left', to: '/toggle', count: '425' },
+  { label: 'Cards', icon: 'i-heroicons-square-2-stack', to: '/card', count: '1419' },
+  { label: 'Loaders', icon: 'i-heroicons-arrow-path', to: '/loader', count: '1161' },
+  { label: 'Inputs', icon: 'i-heroicons-pencil-square', to: '/input', count: '362' },
+  { label: 'Radio buttons', icon: 'i-heroicons-list-bullet', to: '/radio', count: '194' },
+  { label: 'Forms', icon: 'i-heroicons-clipboard-document-check', to: '/form', count: '246' },
+  { label: 'My favorites', icon: 'i-heroicons-bookmark', to: '/my-favorites', count: '' },
+]
 
-  // { label: 'Challenges', to: '/challenges', isLive: true },
-  // { label: 'Spotlight', to: '/spotlight' },
-  // { label: 'Blog', to: '/blog' },
+const navItems = [
+  {
+    label: 'Elements',
+    to: '/elements',
+    children: categories,
+  },
 ]
 // 下拉菜单配置
 const userMenuItems = ref<any>([
@@ -259,6 +340,10 @@ const userMenuItems = ref<any>([
     onSelect: () => clear(),
   }],
 ])
+const handleLogout = async () => {
+  await clear()
+  navigateTo('/')
+}
 const handleCreate = () => {
   if (!loggedIn.value) {
     isLoginOpen.value = true
@@ -266,13 +351,13 @@ const handleCreate = () => {
   }
   navigateTo('/create')
 }
-const colorMode = useColorMode()
+// const colorMode = useColorMode()
 
-const isDark = computed(() => colorMode.value === 'dark')
+// const isDark = computed(() => colorMode.value === 'dark')
 
-const toggleColorMode = () => {
-  colorMode.preference = isDark.value ? 'light' : 'dark'
-}
+// const toggleColorMode = () => {
+//   colorMode.preference = isDark.value ? 'light' : 'dark'
+// }
 
 const isActive = (item: { to: string }) => {
   return route.path === item.to || route.path.startsWith(item.to + '/')
