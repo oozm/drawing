@@ -6,7 +6,7 @@ const props = defineProps<{
     id: string | number
     title: string
     type: string
-    user: {
+    user?: {
       userName: string
       avatar: string
       id: string | number

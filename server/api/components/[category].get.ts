@@ -43,10 +43,17 @@ export default eventHandler(async (event) => {
 
   try {
     // 获取 Blob 列表
+    // 注意：hubBlob().list({ prefix: 'components/' }) 默认是非递归的，可能无法列出 components/userA/xxx.json
+    // 需要加上 folded: false 或者明确递归逻辑。
+    // 但 hubBlob().list 默认行为取决于底层实现（通常是递归的，除非指定 delimiter）。
+    // 在 NuxtHub (Cloudflare R2) 中，list 默认是递归的。
+
+    // 关键修复：确保 list 能列出 components/ 下所有子目录的文件
     const list = await hubBlob().list({
       prefix,
       cursor,
-      limit: 100, // 增加单次获取量以提高内存过滤后的数据命中率
+      limit: 100,
+      folded: false, // 确保递归列出所有子文件夹内容
     })
 
     // 解析 Blob 数据
