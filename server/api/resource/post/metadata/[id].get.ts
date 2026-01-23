@@ -20,7 +20,7 @@ export default eventHandler(async (event) => {
     const targetFile = list.blobs.find(blob => blob.pathname.includes(id))
 
     if (!targetFile) {
-      throw createError({ statusCode: 404, statusMessage: `未找到 ID 为 ${id} 的组件` })
+      throw createError({ statusCode: 404, message: `未找到 ID 为 ${id} 的组件` })
     }
 
     // 4. 获取文件内容
@@ -60,7 +60,7 @@ export default eventHandler(async (event) => {
     // 如果是 404 则转发，否则报 500
     throw createError({
       statusCode: e.statusCode || 500,
-      statusMessage: e.statusMessage || '服务器内部错误',
+      message: e.message || e.statusMessage || '服务器内部错误',
     })
   }
 })

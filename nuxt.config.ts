@@ -14,6 +14,11 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
+  vue: {
+    compilerOptions: {
+      isCustomElement: tag => tag.includes('component-preview'),
+    },
+  },
   colorMode: {
     preference: 'dark', // 默认偏好颜色模式
     fallback: 'dark', // 备用方案
