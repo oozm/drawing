@@ -18,7 +18,6 @@ if (import.meta.server) {
 <template>
   <UApp>
     <div class="w-full max-w-full! h-full flex flex-col">
-      <AppHeader />
       <main class="flex-1">
         <NuxtPage />
       </main>
